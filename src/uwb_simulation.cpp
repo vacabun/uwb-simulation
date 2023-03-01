@@ -33,7 +33,7 @@ void UWBSimulation::topic_callback(const gz::msgs::Odometry &_msg)
 
 void UWBSimulation::load_config()
 {
-    std::string packageShareDirectory = ament_index_cpp::get_package_share_directory("uwb_sim");
+    std::string packageShareDirectory = ament_index_cpp::get_package_share_directory("uwb_simulation");
 
     std::string anchorConfigFilePath = packageShareDirectory + "/config/anchor.xml";
 
