@@ -3,7 +3,7 @@
 UWBSimulation::UWBSimulation() : Node("uwb_simulation_node")
 {
     this->load_config();
-    this->declare_parameter("label_name", "x500_1");
+    this->declare_parameter("label_name", "x500_0");
 
     labelName =
         this->get_parameter("label_name").get_parameter_value().get<std::string>();
@@ -17,8 +17,10 @@ UWBSimulation::UWBSimulation() : Node("uwb_simulation_node")
     {
         RCLCPP_ERROR(this->get_logger(), "Error subscribing to topic [%s].", subscribeTopic.c_str());
     }
-
-    msgPublisher_ = this->create_publisher<uwb_interfaces::msg::UWBData>("uwbData", 10);
+    
+    std::string publishTopic = "uwbData/" + labelName;
+    msgPublisher_ = this->create_publisher<uwb_interfaces::msg::UWBData>(publishTopic, 10);
+    RCLCPP_INFO(this->get_logger(), "publish topic : /%s", publishTopic.c_str());
 }
 
 void UWBSimulation::topic_callback(const gz::msgs::Odometry &_msg)
@@ -27,7 +29,7 @@ void UWBSimulation::topic_callback(const gz::msgs::Odometry &_msg)
     double y = _msg.pose().position().y();
     double z = _msg.pose().position().z();
 
-    RCLCPP_INFO(this->get_logger(), "position: %f %f %f", x, y, z);
+    // RCLCPP_INFO(this->get_logger(), "position: %f %f %f", x, y, z);
     this->uwb_simulate(x, y, z);
 }
 
@@ -92,13 +94,13 @@ void UWBSimulation::uwb_simulate(double x, double y, double z)
         int id = it.first;
         simDistance[id] = realDistance[id] + distribution_normal(tandomGenerator);
 
-        RCLCPP_INFO(this->get_logger(), "label name: %s anchor Id: %d real distance : %f sim distance : %f.",
-                    labelName.c_str(), id, realDistance[id], simDistance[id]);
+        // RCLCPP_INFO(this->get_logger(), "label name: %s anchor Id: %d real distance : %f sim distance : %f.",
+        //             labelName.c_str(), id, realDistance[id], simDistance[id]);
     }
 
     uwb_interfaces::msg::UWBData msg;
 
-    msg.label_name = labelName;
+    // msg.label_name = labelName;
 
     for (auto it : realDistance)
     {
@@ -106,7 +108,7 @@ void UWBSimulation::uwb_simulate(double x, double y, double z)
 
         uwb_interfaces::msg::UWBDistance distance;
         distance.anchor_id = id;
-        distance.label_name = msg.label_name;
+        // distance.label_name = msg.label_name;
         distance.distance = simDistance[distance.anchor_id];
 
         msg.distances.push_back(distance);
