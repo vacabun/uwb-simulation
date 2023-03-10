@@ -18,9 +18,9 @@ UWBSimulation::UWBSimulation() : Node("uwb_simulation_node")
         RCLCPP_ERROR(this->get_logger(), "Error subscribing to topic [%s].", subscribeTopic.c_str());
     }
     
-    std::string publishTopic = "uwbData/" + labelName;
+    std::string publishTopic = "/uwbData/" + labelName;
     msgPublisher_ = this->create_publisher<uwb_interfaces::msg::UWBData>(publishTopic, 10);
-    RCLCPP_INFO(this->get_logger(), "publish topic : /%s", publishTopic.c_str());
+    RCLCPP_INFO(this->get_logger(), "publish topic : %s", publishTopic.c_str());
 }
 
 void UWBSimulation::topic_callback(const gz::msgs::Odometry &_msg)
