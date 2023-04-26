@@ -1,4 +1,18 @@
-#include "uwb_simulation.hpp"
+#include "tag_to_anchor.hpp"
+#include "rclcpp/rclcpp.hpp"
+
+
+int main(int argc, char **argv)
+{
+    (void)argc;
+    (void)argv;
+
+    rclcpp::init(argc, argv);
+    rclcpp::spin(std::make_shared<UWBSimulation>());
+    rclcpp::shutdown();
+
+    return 0;
+}
 
 UWBSimulation::UWBSimulation() : Node("uwb_simulation_node")
 {
@@ -107,9 +121,9 @@ void UWBSimulation::uwb_simulate(double x, double y, double z)
         int id = it.first; // anchor id
 
         uwb_interfaces::msg::UWBDistance distance;
-        distance.anchor_id = id;
+        distance.id = id;
         // distance.label_name = msg.label_name;
-        distance.distance = simDistance[distance.anchor_id];
+        distance.distance = simDistance[distance.id];
 
         msg.distances.push_back(distance);
     }
