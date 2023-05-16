@@ -23,21 +23,36 @@ find_package(nav_msgs REQUIRED)
 find_package(uwb_interfaces REQUIRED)
 find_package(gz-transport12 QUIET REQUIRED OPTIONAL_COMPONENTS log)
 
-add_executable(uwb_simulation_node 
-  src/uwb_simulation_main.cpp 
-  src/uwb_simulation.cpp 
+add_executable(uwb_simulation_tag_to_anchor_node 
+  src/tag_to_anchor.cpp
   src/tinyxml2.cpp)
 
-target_include_directories(uwb_simulation_node PUBLIC include)
+target_include_directories(uwb_simulation_tag_to_anchor_node PUBLIC include)
 
 set(GZ_TRANSPORT_VER ${gz-transport12_VERSION_MAJOR})
-target_link_libraries(uwb_simulation_node gz-transport${GZ_TRANSPORT_VER}::core)
+target_link_libraries(uwb_simulation_tag_to_anchor_node gz-transport${GZ_TRANSPORT_VER}::core)
 
-ament_target_dependencies(uwb_simulation_node rclcpp nav_msgs ament_index_cpp uwb_interfaces)
+ament_target_dependencies(uwb_simulation_tag_to_anchor_node rclcpp nav_msgs ament_index_cpp uwb_interfaces)
+
+# install(TARGETS
+# uwb_simulation_tag_to_anchor_node
+#   DESTINATION lib/${PROJECT_NAME})
+
+add_executable(uwb_simulation_tag_to_tag_node 
+  src/tag_to_tag.cpp)
+
+target_include_directories(uwb_simulation_tag_to_tag_node PUBLIC include)
+
+set(GZ_TRANSPORT_VER ${gz-transport12_VERSION_MAJOR})
+target_link_libraries(uwb_simulation_tag_to_tag_node gz-transport${GZ_TRANSPORT_VER}::core)
+
+ament_target_dependencies(uwb_simulation_tag_to_tag_node rclcpp nav_msgs ament_index_cpp uwb_interfaces)
 
 install(TARGETS
-  uwb_simulation_node
+uwb_simulation_tag_to_anchor_node
+uwb_simulation_tag_to_tag_node
   DESTINATION lib/${PROJECT_NAME})
+
 
 install(DIRECTORY launch
   DESTINATION share/${PROJECT_NAME}
